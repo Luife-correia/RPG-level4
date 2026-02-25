@@ -117,6 +117,37 @@ public class Game {
         textoLore("Um aviso está gravado na entrada:");aviso("Aqui, o tempo não cura. Ele repete.”\n");
         textoLore("Você respira fundo. A primeira tentativa está prestes a começar.\n");
 
+        int totalPassos = 0;
+
+        textoLore("As paredes começam a tremer, como se estivessem vivas, e o chão se contorce sob seus pés.");
+        textoLore("O brilho tênue das tochas se apaga, mergulhando tudo em uma escuridão sufocante.");
+        textoLore("De repente, o espaço se distorce, corredores se alongam e portas desaparecem.");
+        textoLore("O labirinto que antes parecia familiar se desfaz, revelando um novo caminho — obscuro, retorcido, e desconhecido.");
+        textoLore("Você sente uma presença antiga, algo que observa cada passo, como se o próprio ar estivesse carregado de segredos.");
+        textoLore("O som distante de goteiras ecoa, e raízes negras se espalham pelas paredes, lembrando um ninho profundo e esquecido.");
+        textoLore("Agora, você está preso em um novo labirinto, um reino de sombras onde cada curva pode esconder um predador.");
+        textoLore("O desafio não acabou... ele apenas começou.");
+        textoLore("E agora tudo que você pode fazer é seguir em frente.");
+        textoLore("O caminho à frente é obscuro e desconhecido. Você decide dar passos com cautela.");
+
+        while (totalPassos < 80) {
+
+            int passos4 = andar();
+            totalPassos += passos4;
+
+            if (totalPassos % 6 == 0 && !textosLore.isEmpty()) {
+                loreAle();
+            }else if (totalPassos == 16 || totalPassos == 32 || totalPassos == 56 || totalPassos == 64) {
+                abrirBau();
+            }else if (totalPassos == 8 || totalPassos == 28 || totalPassos == 44 || totalPassos == 52 || totalPassos == 68 || totalPassos == 20  || totalPassos == 40) {
+                int puxeInimigo = random.nextInt(inimigos.size());
+                inimigos.get(puxeInimigo).desafiar();
+            }else{digitando("O som dos seus passos ecoa pelas paredes úmidas. O ar continua denso, e a escuridão parece observar em silêncio." +
+                    "\nApenas o silêncio... e a sensação de que algo está à espreita. Siga em frente!");
+            }
+        }
+        enfrentarBoss();
+
 
 
 
