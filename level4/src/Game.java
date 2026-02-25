@@ -1,4 +1,3 @@
-package reset.the.curse.of.time.game;
 import java.util.Random;
 import java.util.Scanner;
 
