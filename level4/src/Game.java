@@ -1,5 +1,4 @@
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Game {
@@ -158,6 +157,7 @@ public class Game {
         }
         enfrentarBoss();
 }
+
     static int andar(){
         int passos;
         do {
@@ -177,6 +177,24 @@ public class Game {
         } while (passos < 1 || passos > 5);
         passos = 4; //delimitador para poder manipular o ritmo do jogo.
         return passos;
+    }
+
+    //define uma lista com os textos de lore, que pode ser editada pelo new ArrayList.
+    //arrays.aslist junta as frases em uma lista.
+    //já o new arraylist torna possivel editar a lista.
+    static List<String> textosLore = new ArrayList<>(Arrays.asList(
+            "Você entra em um corredor onde o ar parece parado no tempo. Gravado em uma pedra antiga, lê-se:" + "\n\"O conhecimento ancestral revela que a ação sempre ocorre ao menos uma vez, antes que o destino seja testado.\"",
+            "No chão coberto de poeira e marcas de garras, você percebe sinais de luta. Uma placa enferrujada caída ao lado diz:"+"\n\"Mesmo quando a condição falha, o primeiro passo já foi dado. O ciclo começa com coragem, não com certeza.\"",
+            "Uma brisa gélida sopra por um túnel estreito. Você ouve um sussurro vindo das sombras:"+"\n\"O laço do-while prende o fluxo até que a condição diga: “basta”.\"",
+            "Em uma sala circular, iluminada por tochas verdes, você encontra um pergaminho sobre um altar de pedra. Ao desenrolá-lo, lê:"+"\n\"Enquanto a condição for verdadeira, o ciclo se reinicia. O tempo é um prisioneiro da lógica.\"",
+            "No centro de uma encruzilhada, uma rocha gigante bloqueia o caminho. Nela, gravado com precisão milenar, está o símbolo: ∞"+"\nO símbolo do infinito lembra: \"o laço pode durar para sempre... se não houver uma saída.\"",
+            "Ao atravessar um arco coberto de musgo, um eco distante reverbera pelas paredes do labirinto:"+"\n\"Outros comandos podem acompanhar o laço: break, continue, aliados na jornada do controle.\""
+    ));
+
+    static void loreAle() {
+        int i = random.nextInt(textosLore.size());//gera um num aleatorio entre 0 e o tamanho da lista
+        String loreEscolhida = textosLore.remove(i);//remove a lore escolhida para não repetir
+        textoLore(loreEscolhida);//imprime a lore escolhida
     }
 }
 
