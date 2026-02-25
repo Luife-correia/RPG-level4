@@ -5,7 +5,6 @@ public class Game {
 
     static String nome;
     static int vida = 100;
-    static int xp = 0;
     static int respostasCertas = 0;
     static int respostasErradas = 0;
     static int acertosBoss = 0;
@@ -129,16 +128,6 @@ public class Game {
         textoLore("E agora tudo que você pode fazer é seguir em frente.");
         textoLore("O caminho à frente é obscuro e desconhecido. Você decide dar passos com cautela.");
 
-
-
-
-
-
-
-
-
-
-
         while (totalPassos < 80) {
 
             int passos4 = andar();
@@ -156,6 +145,13 @@ public class Game {
             }
         }
         enfrentarBoss();
+        digitando("Tornado possível que agora você possa concluir seu objetivo de "+motivo.toLowerCase()+" com o Laço Infinito");
+
+        digitando("\n===== RESUMO DA JORNADA =====");
+        digitando("❤ Vida final: " + vida);
+        digitando("✅ Respostas certas: " + respostasCertas);
+        digitando("❌ Respostas erradas: " + respostasErradas);
+        digitando("==============================");
 }
 
     static int andar(){
@@ -232,5 +228,483 @@ public class Game {
                 digitando("Vida atual: " + vida);
             }
         }
+
+    //guarda uma pergunta , as alternativas e a resposta.
+    static class Pergunta {
+        String pergunta;
+        String[] alternativas;
+        int respostaCorreta;
+
+        //formula para criar uma pergunta
+        Pergunta(String pergunta, String[] alternativas, int respostaCorreta) {
+            this.pergunta = pergunta;
+            this.alternativas = alternativas;
+            this.respostaCorreta = respostaCorreta;
+        }
+
+        void fazerPergunta() {
+            digitando("\n" + pergunta);
+            for (int i = 0; i < alternativas.length; i++) { //com base na quantidade de alternativas adiciona nums
+                digitando((char)('A' + i) + ") " + alternativas[i]);//transforma o num da alternativa em uma letra usando char
+            }
+            digitando("Sua resposta: ");
+            String resposta = input.nextLine().trim().toUpperCase();//le tirando espaços e aumentando a caixa.
+            int indice = resposta.charAt(0) - 'A';//converte a letra pra num novamente.
+            //verifica se correto.
+            if (indice == respostaCorreta) {
+                digitando("✅ Correto!");
+                respostasCertas++;
+            } else {
+                digitando("❌ Errado.");
+                respostasErradas++;
+                vida -= 20;
+                aviso("Você perdeu 20 pontos de vida. Vida atual: " + vida);
+                if (vida <= 0) {
+                    aviso("Você caiu em batalha...");
+                    aviso("VOCÊ MORREU");
+                    System.exit(0);
+                }
+            }
+        }
+
+        //mesma coisa do anteior mas para as perguntas do boss.
+        void fazerPerguntaBoss() {
+            digitando("\n" + pergunta);
+            for (int i = 0; i < alternativas.length; i++) {
+                digitando((char)('A' + i) + ") " + alternativas[i]);
+            }
+            digitando("Sua resposta: ");
+            String resposta = input.nextLine().trim().toUpperCase();
+            int indice = resposta.charAt(0) - 'A';
+
+            if (indice == respostaCorreta) {
+                digitando("✅ Correto!");
+                acertosBoss++;
+                respostasCertas++;
+            } else {
+                digitando("❌ Errado.");
+                respostasErradas++;
+                vida -= 40;
+                aviso("Você perdeu 40 pontos de vida. Vida atual: " + vida);
+                if (vida <= 0) {
+                    aviso("O Guardião da Verdade foi implacável...");
+                    aviso("VOCÊ MORREU");
+                    System.exit(0);
+                }
+            }
+        }
+    }
+
+
+    static class Inimigo {
+        String nome;
+        List<Game.Pergunta> perguntas;
+
+        //formula para criar um Inimigo.
+        Inimigo(String nome, List<Game.Pergunta> perguntas) {
+            this.nome = nome;
+            this.perguntas = perguntas;
+        }
+
+        //anuncia o inimigo e dependendo do nome chama uma art ASCII.
+        void desafiar() {
+            switch (nome) {
+                case " Zs'skayr":
+                    uVisu();
+                    break;
+                case " Doutor Salvador":
+                    sVisu();
+                    break;
+                case " Grimm":
+                    tVisu();
+                    break;
+                case " Lich":
+                    qVisu();
+                    break;}
+
+            digitando("\n" + nome + " aparece e desafia você!");
+            for (int i = 0; i < 2; i++) {
+                int puxeInimigo = random.nextInt(perguntas.size());//escolhe uma pergunta aleatoria das perguntas do inimigo.
+                perguntas.get(puxeInimigo).fazerPergunta();//pega pergunta escolhida e mostra.
+            }
+        }
+    }
+    //visual fantasmatico
+    static void uVisu(){
+        System.out.println("                                 :****:");
+        System.out.println("                                 -%###-");
+        System.out.println("                                :++**#*=*#*****+=.");
+        System.out.println("                                 -+++#######*****+-.    :");
+        System.out.println("                                 :==*########*****##%*+=.");
+        System.out.println("                              :-=+**%***#*###*****######*==:");
+        System.out.println("                              :-=+=*%%#+++*##*****###**####=:-");
+        System.out.println("                              .=---*%%#++*####***####***#####*++=");
+        System.out.println("                                :--=*%#++*###***####**######**####*=");
+        System.out.println("                                 .-++**####****##*####************##*");
+        System.out.println("                                 :******##********##***************##.");
+        System.out.println("                                 .+******##*****#%#****************##.");
+        System.out.println("                                  -*******##***#%#*****************##.");
+        System.out.println("                                  .+*******#%#%#*******************#%.");
+        System.out.println("                                   .+********#**************##*****##.");
+        System.out.println("                                   .=*******##*************###%*****#.");
+        System.out.println("                     :             .=*******##************###%##****#.");
+        System.out.println("                  .=***=.          :********##***********#%######***#.");
+        System.out.println("                 .+**+:#*+-        :**##****#%#%%%%%%%%%%**#####+:+**-");
+        System.out.println("                :****+  :****=.   .=**##****#%%#*********######*. +**#");
+        System.out.println("  --.       --+******+    .=#*******###****#%#**********######*.   +*#*");
+        System.out.println(" :-+++++===*+=****###*=      -#*****###**#%%#**********######:     -**#");
+        System.out.println(" =+--++++-:-.==*.    .-         :*#**###%%#*********####****++*+++***#%.");
+        System.out.println(" -+-=      --.        .=:        -**#%%%********#****###: -*#******######");
+        System.out.println(" =-=   :--=           .==      :*#%%#*********###****+.        -*########+=-");
+        System.out.println(" :--  :-=.            .-:    :*%%#**********####*****:                     --");
+        System.out.println("  -   +-:             .-    =%#***********####++****#:");
+        System.out.println("  -   -=             .-   :%#**********####*: -*#*###:");
+        System.out.println("  =  :-.             :   -#**********####=.  :-=::=.:.");
+        System.out.println("  :  :-             :   -*********#%%#+:   .==: :=. :-");
+        System.out.println("     .-               .=********++%%%=    :-=:  :-. .-.");
+        System.out.println("      -               :****+**+--=++:    :=+:  :=:  .-=.");
+        System.out.println("      -              .****#**+=-=+=.    :-=+: :--.  .-=+:");
+        System.out.println("       .             :***#%%%%%%#+:     .-++. :--.    .---=+-.");
+        System.out.println("                     =**#%%%%%%%%=       .==.  :=:");
+        System.out.println("                     =*##%%%%%%%+.       :=:..  .=:");
+        System.out.println("                     =+-+*-----+-         -:.    :-.");
+        System.out.println("                     .++**-----==:        :=:      .-.");
+        System.out.println("                     .=***====*%%=         ::         :.");
+        System.out.println("                      .*%%%%%%%%%=          :.");
+        System.out.println("                      :#%%%%%%%%#*-          ..                .-#%%%%-");
+        System.out.println("                      =#*+***+=-=+*-                         .#%%%%#%%%%:");
+        System.out.println("                      :: .-------+%%=                      .---#*:    +%%.");
+        System.out.println("                          .+++*#%%%%#=                    :*%%+:       :%*");
+        System.out.println("                           .+%%%%%%*=++-                 -=--*.         *%");
+        System.out.println("                             .+*+=---=#%*:             .*%%#+.           #");
+        System.out.println("                               .---=*#%%%#+-.        .==--#*.            #");
+        System.out.println("                                 :*%%%%%+-=*%%*-:--:-*%%#==.             =");
+        System.out.println("                                   .=+=--=*%%%+-=#%#=-#%%=");
+        System.out.println("                                      .:+#%%%*=-*%%%+-##-");
+        System.out.println("                                           :::=*%%%+==-");
+    }
+    //perguntas fantasmatico.
+     List<Game.Pergunta> fantasmatico = Arrays.asList(
+            new Game.Pergunta("Qual é a principal diferença entre while e do-while?",
+                    new String[]{"Verifica antes de executar", "Nunca executa se falsa", "Executa pelo menos uma vez", "Só funciona com inteiros"}, 2),
+            new Game.Pergunta("Onde é verificada a condição no do-while?",
+                    new String[]{"Antes do bloco", "Dentro do bloco", "Após o bloco", "Nunca é verificada"}, 2),
+            new Game.Pergunta("Qual a forma correta de escrever do-while?",
+                    new String[]{"do { } while();", "do { } while (condição);", "while (condição) { } do;", "do while (condição) { }"}, 1),
+            new Game.Pergunta("Se a condição presente no do-while for falsa desde o início o que acontece?",
+                    new String[]{"Nunca executa", "Executa uma vez", "Trava", "Erro de compilação"}, 1)
+    );
+    //visual doutor salvador.
+    static void sVisu(){
+        System.out.println("                                                                         :%%:   ");
+        System.out.println("                                                                       *%%%     ");
+        System.out.println("                                                                     .%%%-      ");
+        System.out.println("                                                                    +%%%-       ");
+        System.out.println("                                                                   ##%%.        ");
+        System.out.println("                                                                  %%%+.         ");
+        System.out.println("                                      .:=======.                .###:           ");
+        System.out.println("                                  .=+========+=+             -#*#**##*          ");
+        System.out.println("                                   ++=========++-          .***##*#*###:        ");
+        System.out.println("                                  -#*+===--===+++         +*#####*##*##+=       ");
+        System.out.println("                                   #|[]|++-+=|[]|      .%-##%*#####*##*%        ");
+        System.out.println("                                   =**=#**=-==+==      #-**#%%#****#*###*-      ");
+        System.out.println("                                   -***+===++=+++=      *+=%%%%**%##*##%-       ");
+        System.out.println("                                    #****+*++#+##+    .:::--+#**%%###:          ");
+        System.out.println("                                   *++****+++*#*#:  :-----=****#%%=             ");
+        System.out.println("                           .++===+###%%+*+#*%#**-::-++=+#*#+##*                 ");
+        System.out.println("                         .*=++==++++#++++=::::::-+=*-     -%%%+                 ");
+        System.out.println("                         **==+=-=-+:--:---::-+==+#*       =*#%*                 ");
+        System.out.println("                        *##++++++--::::--====+##*%%=      **###                 ");
+        System.out.println("                        *%%#*****+===+++=-*##%%%%%%#**+* ++**##                 ");
+        System.out.println("                         %%%##%**#%%#*###*++***##%%##***+***###*                ");
+        System.out.println("                         =%%@@%%%%%%%%%******+****#####*##**####                ");
+        System.out.println("                         %%%@@@@@@@@@@@%%###**#***%%#%#%#######:                ");
+        System.out.println("                        :%%%%%%@@@@@@@@@@%%%%%####%%%%%%######.                 ");
+        System.out.println("                        :**##%%%%@@@@@@%%%%@%%%%%%%+                            ");
+        System.out.println("                        *###*###%%%%%%%%%%%%%%%%%%%+                            ");
+        System.out.println("                        +****#**#%%####******####%%+                            ");
+        System.out.println("                        ##***+**%%%+*+++*++*****##%=                            ");
+        System.out.println("                        #****+*###+++++++=++*+***#%=                            ");
+        System.out.println("                        *****+*##*++++++++++++***#%:                            ");
+        System.out.println("                       =#*****###++++*++++**++***##.                            ");
+        System.out.println("                        ###**#%##*++*+++*+****#####=                            ");
+        System.out.println("                        *#%%%%%%#**#*#*#****####%%%+                            ");
+        System.out.println("                       *#%%%%%%%#######*#*###%%%%: +                            ");
+        System.out.println("                      .#%%#%%%%#%####%%##%%%%%%%%%%                             ");
+        System.out.println("                      :%%%%%%%%%#%%%%%%%%%%%#%%%%%=                             ");
+        System.out.println("                      %%%%%%%%#%%%#%%%%%%%%%%%%%%%                              ");
+        System.out.println("                     ##%#%%%%%%%%%%%%%%%%%%%%%%%%%                              ");
+        System.out.println("                   +###%#%%%%%%%%#%%%%%%%%%#%%##%%%                             ");
+        System.out.println("                  *######%%#%#%%%%%%%%%%%%##*%#####+                            ");
+        System.out.println("                 #####****##%#%%#%%%%%%%%#%*#%#**###:                           ");
+        System.out.println("               .######%%%%#**#%%##%%%##%%%#**########.                          ");
+        System.out.println("              :#####*##%%%%%%%%%%%@%%%%#####%%########                          ");
+        System.out.println("             .##########%%##%%%%%=.:#%%%%%%%%#########-                         ");
+        System.out.println("             *###%%%%%%%%%%%%%%-     .%%%%%%%%###*#####                         ");
+        System.out.println("            ####%%%%%%%%%%%%%#         *%%%%%%#########-                        ");
+        System.out.println("           +#%%%%%%%%%%%%%%%=           -%%%#%%#%###%##*                        ");
+        System.out.println("          :%%%%%%%%%%%%%%%#               %%%%%%####%###                        ");
+        System.out.println("          *%%%%%%%%%%%%%%:                 +%%%%%#######-                       ");
+        System.out.println("         +%%%%%%%%%%%%%*                    :%%%%%#%%###%                       ");
+        System.out.println("         ###%%%%%%%%%*                       +%%%%######%-                      ");
+        System.out.println("        .%%%#%%%%%##                          *%%%%######%                      ");
+        System.out.println("         %%%%%%%%%%#                           %%%%######%                      ");
+        System.out.println("         #%%%%%%@%%%.                          -%%%%%%%#%%#                     ");
+        System.out.println("         #%%%%%%@%%%.                           %%%%%%%%%%%                     ");
+        System.out.println("         :%%%%%%%%%%                            +%%%%%%%%%%                     ");
+        System.out.println("         -%%%%%%%%%                              #%%%%%%%%%                     ");
+        System.out.println("         %%%%%%%%%*                               %%%%%%%%%*                    ");
+        System.out.println("         #%%%%%%%%%                               +%%%%%%%%%.                   ");
+        System.out.println("        .%%%%%%%%%%+                               %%%%%%%%%.                   ");
+        System.out.println("        #%%%%%%%%%%                                #%%%%%%%%.                   ");
+        System.out.println("        %%%%%%%%%%                                 %%%%%%%%%%                   ");
+        System.out.println("      *%%%%%%%%@%%.                                -%%%%%%%%%-                  ");
+        System.out.println("   *#%%#%%%%%%%%#.                                 -%%%%%%###-                  ");
+        System.out.println(" -#####%%%%#                                       :%%%%%%%%%:                  ");
+        System.out.println(" =%%%%%%%=                                          =%%%%##*##+                 ");
+        System.out.println("                                                       :%%######.               ");
+        System.out.println("                                                        +%%##**#%               ");
+        System.out.println("                                                          .+#%%#.               ");
+    }
+    //perguntas doutr salvador.
+     List<Game.Pergunta> doutorS = Arrays.asList(
+            new Game.Pergunta("Qual laço de repetição utilizar para fazer uma repetir até digitar 'sim'?",
+                    new String[]{"for", "while", "do-while com verificação", "if dentro de switch"}, 2),
+            new Game.Pergunta("Quando usar do-while?",
+                    new String[]{"Verificar antes", "Executar pelo menos uma vez", "Repetições fixas", "Com arrays"}, 1),
+            new Game.Pergunta("Quantas vezes o do-while é garantido?",
+                    new String[]{"Nenhuma", "Uma", "Duas", "Depende"}, 1),
+            new Game.Pergunta("Se a condição do do-while for verdadeira para sempre o que acontece?",
+                    new String[]{"Executa uma vez", "Nunca executa", "Loop infinito", "Compilador trava"}, 2)
+    );
+    //visual grimm
+    static void tVisu(){
+        System.out.println("                                                -                                ");
+        System.out.println("                                   +#-         =%#:                             ");
+        System.out.println("                                  %*+*          *++%-                           ");
+        System.out.println("                                 #+++%          -%+=*#                          ");
+        System.out.println("                                #*+++#*          %++++%-                        ");
+        System.out.println("                               +*+++++%:         =*+++=#+                       ");
+        System.out.println("                              :%+++++++%.        :#+++++*=                      ");
+        System.out.println("                              ##++++++++%.       :#++++++#*                     ");
+        System.out.println("                             :%++++++++++%-      =#+++++++%:                    ");
+        System.out.println("                             =*++++++++++=#*     %+++++++=+%                    ");
+        System.out.println("                        =    #++++++++++++++%:  +#+++++++++#+                   ");
+        System.out.println("                       #+    %*++++++++++++++*%##++++++++++**                   ");
+        System.out.println("                      #%-    %*+++++++++++++++++++++++++++++#.                  ");
+        System.out.println("                     *+%.    **+++++++++++++++++++++++++++++%. :%+              ");
+        System.out.println("                    .#=%     :%+++++++++++++++++++++++++++++%.  -##-            ");
+        System.out.println("               :##==+%=%*==+%*#*+++++#%#*+++++++++++++++++++%.  .%=#: .=#%=     ");
+        System.out.println("             .%++%#==%=+*-==-=+%+++%=--===*%*=++++++++++++++%%+-+%=+*=-+%       ");
+        System.out.println("            .%%-     #+=#.##===+%=%+=*%----=%%*+++++=+%%+*%*%==#*-=%#+          ");
+        System.out.println("           .#.       :%=-#= -#+=##%=-*#%%+*#::+%+++#%*%--=+%%#*-=+#.            ");
+        System.out.println("                      :%===#+.:%=+%+:**-=#%+::::#%#-:-%*%#%#==*%+               ");
+        System.out.println("                        **=-==*%%**%=*#-=-=%+.:.::::+%*=#%##*:                  ");
+        System.out.println("                          *%*====-==*##*====%......##-=#%*+++*#+.              ");
+        System.out.println("                   *=        -%%%#####%%#=--# ...:##-*%*#%%%%##=+%.            ");
+        System.out.println("                   *%*    =###########*##%%%%....-%%*.          -%#           ");
+        System.out.println("                    #####***%%-       *%#*#%%%+%%-                *            ");
+        System.out.println("                      -##=             :%#####%%:                               ");
+        System.out.println("                                        +####%#%:                               ");
+        System.out.println("                                        :%*#%##%:                               ");
+        System.out.println("                                        .%#%###%-                               ");
+        System.out.println("                                        .%%##*%##                               ");
+        System.out.println("                                        -%###%##%-                              ");
+        System.out.println("                                        %##*%##%#%.                             ");
+        System.out.println("                =%      #:             ####%##%%#%%                 +#*%.      ");
+        System.out.println("              :##:    :%+            -%###%**%%#*%#%:                .#-=*     ");
+        System.out.println("             *+##     ##+          -%###%####%*##%##%*                #=-=%    ");
+        System.out.println("            #*=%%    :%#%-      :*%##%%#*###%*#*%###%#%*.           .#+=-=%:   ");
+        System.out.println("           .%-####.   %###%%%%%###%%######%####%####%#*##%#=.    -+%*===-+%    ");
+        System.out.println("           :%=#####%*--%#####%%%#####***%%####%#*###%##########%%%#**=-=##     ");
+        System.out.println("            #+=%##**#############**#**%%#####%###*#%#*#########**######%%+     ");
+        System.out.println("     .#%########%%%#*#############*#%%#####%%#*##*%%###########**#####**###%+  ");
+        System.out.println("   :%*##############%%%#**##**##%%#####*##%#*##*#%*==#=*%%%%%%%%%%%%%%####*#*% ");
+        System.out.println("  *#%%%####%%###********############*##%%#**#*##%====**-==========-*#    *%**##.");
+        System.out.println(" **           *###***##***#####**###%%#***#*#%%#=-==-=#%%*+==+======-*=    +%#%+");
+        System.out.println("                 =#%###****####%%%##*#**###%%%%.#======+%.      .-+**%#*    %#%.");
+        System.out.println("               :+#+====+++++#%######**#%%+. #%+  *#===-==%=            +.  .%#  ");
+        System.out.println("        #%%%%*+=======-=*%%#**#####%%+=%#   %%-    +#+--===#+              ::   ");
+        System.out.println("           .-*%%%%%#+-%%#*####%#-.    =%*   %%:      .##+==-=+%*-                ");
+        System.out.println("                   :%###%%%:          +@*  :@%           :%%#=====+%%%#%%.      ");
+        System.out.println("                  %#%%#.              #%*  =%%                 -+%%@%=.         ");
+        System.out.println("                -%%=                  #%*  *%+                                  ");
+        System.out.println("               *#.                    #%*  #%.                                  ");
+        System.out.println("              -.                      *%*  %%                                   ");
+        System.out.println("                                      +%*  %%                                   ");
+        System.out.println("                                      -@*  %#                                   ");
+        System.out.println("                                      .@*  %*                                   ");
+        System.out.println("                                      .%#  %=                                   ");
+        System.out.println("                                       #%. #=                                   ");
+        System.out.println("                                       +%. %=                                   ");
+        System.out.println("                                       .%: %=                                   ");
+        System.out.println("                                        %+ %=                                   ");
+        System.out.println("                                        :% #=                                   ");
+        System.out.println("                                        .% +=                                   ");
+        System.out.println("                                         *+:+                                   ");
+        System.out.println("                                          * #                                   ");
+        System.out.println("                                          :                                     ");
+    }
+    //perguntas grimm.
+     List<Game.Pergunta> grimm = Arrays.asList(
+            new Game.Pergunta("Qual a estrutura para validar uma entrada pelo menos uma vez?",
+                    new String[]{"for", "while", "do-while", "switch"}, 2),
+            new Game.Pergunta("O que acontece ao esquecer ponto e vírgula após while?",
+                    new String[]{"Erro de compilação", "Funciona normal", "Condição ignorada", "Executa duas vezes"}, 0),
+            new Game.Pergunta("Pode usar break no do-while?",
+                    new String[]{"Sim", "Não", "Só com switch", "Só com continue"}, 0),
+            new Game.Pergunta("Uma condição nunca satisfeita de do-while:",
+                    new String[]{"Nunca executa", "Executa uma vez", "Loop infinito", "Até fim do programa"}, 1)
+    );
+    //visual lich
+    static void qVisu(){
+        System.out.println("                                                        ***+-:    .-=+#####=:-+*:");
+        System.out.println("      :-------:                 .-----:....            -##+--= =::==######*--.  ");
+        System.out.println("   .:::-------::=:        ..  :--::-----.....           -+=:.:==:.-#######*-    ");
+        System.out.println(" .-====: :---+-+==        .-.:--:.:------.....            -====::-++=::-::=.    ");
+        System.out.println(" =======:   :=*##=-       .-- -...:-------.......              --*#####**#*     ");
+        System.out.println(":##*===-.    =+##+.       .-== ...----:::-...     ..        ..-=*#*******#:     ");
+        System.out.println("+##=:-::.   -=###=       :.==*- .:-:..... .. :.....  .... .-==:**********=      ");
+        System.out.println("*=-#**---::- =**+.      .. -+*-: .  ....------:.  ..... -====##+-******#-       ");
+        System.out.println(" +*###*=--:.:---.       .  .==+ ..:-:..----:.. .... .--.-==*#####+-==+=.         ");
+        System.out.println(".#*###*=:-===-:.    .: . -. :+*-::-----:.-=+...... .----:############+.         ");
+        System.out.println("-:###*.###+=====.:--:---------+---: .+*******=.... .---#==##########.           ");
+        System.out.println(" .=#*:######+=::----:.. .--::::-=:=---==+*******+-: :--##+-+#####*:             ");
+        System.out.println("   -=*#######+-=----.. -+++***++++++++++=====:-+***+:.-=****++=:..              ");
+        System.out.println("     .######*.##*==.  -#%%%+:*%%%%*-++++=:  .-++.+***:  -=***- ...         -=-.-");
+        System.out.println("       -+####-***# ..-#%%+++#%-*=#%%%#:        .+:=**-....   ...... ==--===::===");
+        System.out.println("         ..+#.#*#... =%#+:::=%%%#+%%%    .      :+-+**...... ...... ==-=========");
+        System.out.println("               ==....+:  . ..  #%%%%+ .   +*     +.-=**..... ..  ....--=========");
+        System.out.println("                  ..:+-        ==%%*#.         .=+=+-=**.... ..  .. .-========-=");
+        System.out.println("                 ... =-   .+-  .#-*%:#+  ...  :-:**+=+*+...  ...  :*##*====-+*-.");
+        System.out.println("                 ....-:..     .-%+==%#:#%=.%%*#%#%#+=+++:. ......+####*#*=#*- ..");
+        System.out.println("                  ... ==      .%* --#%%#+=++=*%= %#-:=**-. ....-#######**#- ....");
+        System.out.println("                   ... -%#*=.+%#- .*=%*=%##%%#-.-%.+:=**:  ...-#**###*+#- ......");
+        System.out.println("                     ... %%%%#%*-%#%%%*=%%#.= ..#.+==***.  ...#*+###*+*: .......");
+        System.out.println("                       . -*%+=%**%%+.+-+=... .-#=%:-=**+  ..:##+###+*- ........-");
+        System.out.println("                    .-=:#%%##%.:+::-:.---.. ..+%%# -****  . *#=###+#. ......:+**");
+        System.out.println("                    .**-#%%=:*:---:-:.-= . ..:=%%.=:***-   +#+###** ..... :*****");
+        System.out.println("                    :#::#=::.--:=-=+ -.-. .-.==+=+=:***   -##*###+......-*******");
+        System.out.println("                    :*#+.*****==--=+..... --:==%%.-:*** ..=#=###+. ...=*********");
+        System.out.println("                     -#+*######*=-:..*+-+.-.*=#%.+=:***. :##*###- ..=***********");
+        System.out.println("                      =#########+--.=:::.:--+%#.:-::***-.=#+*##* .-*************");
+        System.out.println("                       .#######* .:=::---=##%= .-=.:****.##=**%=++**************");
+        System.out.println("                         +###*#*-.=+:.+=-....:=+++=:***+ :=++**+###*************");
+        System.out.println("                          .+###*#+-*#.**=.  . :=++=+**:== ...%++*%##************");
+        System.out.println("                          ...+##*+##*###- ..=: .  :*+:==..-..#++=##*%%**********");
+        System.out.println("                         ....  -**++=.:-..-****- :**-:++ .-:#+++-=%**%##********");
+        System.out.println("                        ..=*=-.  .--=+++-.=****+-***- :+-:-+*+=--=*++*#+*#******");
+        System.out.println("                 .----. .+*****+-::::.+++: **********.. =:-+=-=*=+++++**+++*#***");
+        System.out.println("             .:------: :*******+-=: ..:-.. *********++.=.:+===#%#*+++++++++++*#*");
+        System.out.println("          .---------:.=*********=-+++:---::*+****-::=+.+*##+++%*##*+++***++++++*");
+        System.out.println("       .-----------:.+***********-   ...:- :-:-++. :+=+**#+++*#+++*%++**#+%#++++");
+        System.out.println("    .-------------:.**************+-:-******..=**********#++***++++++##*#%++*#*+");
+        System.out.println(" ::--------------..***=+******************************%**#++%%*++++=++**++=*+++*");
+        System.out.println("----------------:.*+=+********************************#%#+++%+*+++=**==++=**==+=");
+        System.out.println("----------------.+*=++++******************************#+%++#*+===+=**+*===*=+++=");
+        System.out.println("---------------:=*****=+*******************************+*+**+++++=+*=+++=**=++++");
+        System.out.println("----------------:.***++*****=+*****=+****************#*+++#*+=*+++*=+++++=**=+++");
+        System.out.println("::---------------- :==****+-:+*****=***********#%#***%*+++**=*+=+++*=+++++=*+===");
+        System.out.println("%#-:-------------.*##+-:++--=**:***=************%*#**%*+++**+*=+++++*=+++==++===");
+        System.out.println(".%%#::----------- %#####-#*++* .+***++**********%**#*%*+++**+=*=+++=*+==========");
+        System.out.println("-:+%%::---------- #######-+#==##:..-=====++*****#**#+**-==#*+++*=====*======****");
+        System.out.println("--:.-:=:--------- ###**#=+--*##.--.::::::::::::::#=+::#---=+===++=====+=++++++**");
+        System.out.println("----:##*.-------- ##+-*: #=##-:---.=::::::::::::::+#+:-*---=+==+*==+=+***=++++++");
+        System.out.println("-:::-.##=:-----:-.###= *#++#=:----.+*****+=-=====-=+%++*#****#+=++*++++=+***++++");
+    }
+    //perguntas lich.
+     List<Game.Pergunta> lich = Arrays.asList(
+            new Game.Pergunta("Quando usar do-while?",
+                    new String[]{"Não sabemos repetições", "Garantir execução inicial", "Lista fixa", "Recursão"}, 1),
+            new Pergunta("Qual é o comportamento do do-while se a condição for falsa?",
+                    new String[]{"Executa uma vez", "Nunca executa", "Executa até erro", "Executa infinitamente"}, 0),
+            new Pergunta("Por que o do-while é útil para menus interativos?",
+                    new String[]{"Evita loops", "Executa antes da verificação", "Só funciona com números", "Não precisa de condição"}, 1),
+            new Pergunta("Qual palavra-chave encerra o do-while?",
+                    new String[]{"end", "stop", "break", "while"}, 3)
+    );
+
+    //lista dos inimigos e suas perguntas.
+     List<Game.Inimigo> inimigos = Arrays.asList(
+            new Inimigo(" Zs'skayr", fantasmatico),
+            new Inimigo(" Doutor Salvador", doutorS),
+            new Inimigo(" Grimm", grimm),
+            new Inimigo(" Lich", lich)
+    );
+
+    //perguntas do boss.
+     List<Game.Pergunta> bossFinal = Arrays.asList(
+            new Game.Pergunta("Qual palavra-chave permite sair imediatamente de um laço?",
+                    new String[]{"continue", "exit", "break", "return"}, 2),
+            new Game.Pergunta("Qual estrutura é mais indicada para validar entrada até estar correta?",
+                    new String[]{"if", "for", "do-while", "switch"}, 2),
+            new Game.Pergunta("O que acontece se a condição do do-while for sempre verdadeira?",
+                    new String[]{"Executa uma vez", "Nunca executa", "Loop infinito", "Erro de compilação"}, 2)
+    );
+
+    //enfrentar o boss.
+     void enfrentarBoss(){
+        digitando("\n👑 Um ser surge das sombras... O Guardião da Verdade!");
+        System.out.println("                                                                                 ");
+        System.out.println("                                   .:  = ..                                      ");
+        System.out.println("                           .    .  ..=+  :=                                      ");
+        System.out.println("                       ..:: :--.*:::+%**:-. .                                    ");
+        System.out.println("                        :-+.*.*#%%%%%#*##=*::.                                  ");
+        System.out.println("                       .- :#-##%%#%%%%%%%%##+                                   ");
+        System.out.println("                           :=*+*:          .+:***=:#.:.                         ");
+        System.out.println("                          .:                  .##+.:.:. .                       ");
+        System.out.println("                          ..                  .+%%%%#- +                        ");
+        System.out.println("                      .  :.                    -%%####+:-                       ");
+        System.out.println("                     .  . -.                   -%%#%*-.                         ");
+        System.out.println("                   ::*.%#++%                     +%%%%=                         ");
+        System.out.println("                  .:=*#%+=    .             .     *#%*#*::.:                     ");
+        System.out.println("                  +.:#*#*#:    .           .      .*%%%%%=- :                     ");
+        System.out.println("                    -%%%%%%-    ...........  = :#%%%%%%#:  .:.                  ");
+        System.out.println("                -.*+#%=%#==.                   :+%%%%%%%.=.=::                  ");
+        System.out.println("              .. *#*%%:                            .%%%%+-=::                   ");
+        System.out.println("             .. :%%%%:                               :#%:**+. -                 ");
+        System.out.println("            .-=.+%#.                                  -#%%%*+-. :               ");
+        System.out.println("         -.-.#=*=.                                      #%#:-.                  ");
+        System.out.println("       ..=.*+=-           :.                            *=%*==:                 ");
+        System.out.println("         -+*--.         :%%:                            #+++=.:                 ");
+        System.out.println(" .:    :- #%#             +%                             %:%-                   ");
+        System.out.println("   .  .-*%+++*.                                           =%%+                  ");
+        System.out.println("      .===-*%%***                                         -=+#::.               ");
+        System.out.println("         : %-%%%.                                +%       :%%%#.+-              ");
+        System.out.println("          :.=%##.                                +%%-      -##=*=.              ");
+        System.out.println("          --%*%%.                               -%%%#      =##% .-: .           ");
+        System.out.println("         .  #=+**                               =%%%:       +=%%%=              ");
+        System.out.println("           =.+=+#.                               +%%       :#%%%#%+.            ");
+        System.out.println("             :::#=                                #%       =%%%%:- .*           ");
+        System.out.println("            + -:#=*-                                       =%%%%#*=+%..:.       ");
+        System.out.println("               -*-++:                                       :-#%%***% =-. :     ");
+        System.out.println("                +%#-+:                                           :#%%%%%**:     ");
+        System.out.println("                =.**%+                                              *%+*:- .=.. ");
+        System.out.println("              .--..=:-*                                               .*#:. .   ");
+        System.out.println("               == -++%%                                                 .  .    ");
+        System.out.println("          .-=#%%%%%%%%%#                                                ..- .   ");
+        System.out.println("       =#%%%%%%%%%%%%%%.          -****                                 =*:     ");
+        System.out.println("     #%%%%%%%%%%%%%%%%.         *%%%%%:                             ..=%%%:     ");
+        System.out.println("     =%%%%%%%%%%%%%%*.          *%%%%=        .==*%%%%%%%%%%%%%%%%%%%%#+:       ");
+        System.out.println("       :+%%%%%%%%%.           :#%%%%%=      +%%%%%%%%%%%%%%%%++..::.            ");
+        System.out.println("            .##%%%.        .%%%%%%%%%%-    =%%%%###:                            ");
+        System.out.println("                  .=.   -+#%%%%%%%%%%%%%+--==-                                  ");
+        digitando("\nPrepare-se para um desafio de troca equivalente! Onde você pode passar, se sua vida sacrificar, ou sabedoria demonstrar.");
+
+        //puxa as perguntas do boss.
+        for (int i = 0; i < bossFinal.size(); i++) {
+            bossFinal.get(i).fazerPerguntaBoss();
+        }
+
+        //se acertar tudo aumenta a vida.
+        if (acertosBoss == 3) {
+            vida += 50;
+            digitando("\n Você respondeu tudo corretamente! O Guardião reconhece sua sabedoria.");
+            digitando("Sua vida aumenta em 50 pontos. Vida atual: " + vida);
+        }
+
+        digitando("\n O Guardião da Verdade concede a você uma parte do Laço Infinito.");
+        digitando(" O labirinto se desfaz... e você emerge vitorioso!");
+    }
     }
 
