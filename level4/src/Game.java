@@ -130,6 +130,16 @@ public class Game {
         textoLore("E agora tudo que você pode fazer é seguir em frente.");
         textoLore("O caminho à frente é obscuro e desconhecido. Você decide dar passos com cautela.");
 
+
+
+
+
+
+
+
+
+
+
         while (totalPassos < 80) {
 
             int passos4 = andar();
@@ -147,20 +157,26 @@ public class Game {
             }
         }
         enfrentarBoss();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+    static int andar(){
+        int passos;
+        do {
+            digitando("\nQuantos passos você quer andar? Escolha entre 1 a 5:");
+            passos = input.nextInt();
+            input.nextLine();//limpar o buffer.
+            if (passos >= 10) {//se andar mais que dez passos o player morre.
+                digitando("Você movido(a) pela coragem ou talvez pela imprudência, avança com passos largos");
+                digitando("A trilha se estende além da visão, envolta em névoa e silêncio.");
+                digitando("Você percebe tarde demais: \"Talvez eu tenha ido longe demais... sem saber o que me esperava.\"");
+                digitando("O chão desaparece sob seus pés.");
+                digitando("E ele cai... um buraco que parece não ter fim.");
+                digitando("A queda é longa. O silêncio, absoluto.");
+                aviso("VOCÊ MORREU");
+                System.exit(0);
+            }
+        } while (passos < 1 || passos > 5);
+        passos = 4; //delimitador para poder manipular o ritmo do jogo.
+        return passos;
+    }
 }
 
