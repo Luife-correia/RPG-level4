@@ -182,7 +182,7 @@ public class Game {
     //define uma lista com os textos de lore, que pode ser editada pelo new ArrayList.
     //arrays.aslist junta as frases em uma lista.
     //já o new arraylist torna possivel editar a lista.
-    static List<String> textosLore = new ArrayList<>(Arrays.asList(
+     List<String> textosLore = new ArrayList<>(Arrays.asList(
             "Você entra em um corredor onde o ar parece parado no tempo. Gravado em uma pedra antiga, lê-se:" + "\n\"O conhecimento ancestral revela que a ação sempre ocorre ao menos uma vez, antes que o destino seja testado.\"",
             "No chão coberto de poeira e marcas de garras, você percebe sinais de luta. Uma placa enferrujada caída ao lado diz:"+"\n\"Mesmo quando a condição falha, o primeiro passo já foi dado. O ciclo começa com coragem, não com certeza.\"",
             "Uma brisa gélida sopra por um túnel estreito. Você ouve um sussurro vindo das sombras:"+"\n\"O laço do-while prende o fluxo até que a condição diga: “basta”.\"",
@@ -191,10 +191,46 @@ public class Game {
             "Ao atravessar um arco coberto de musgo, um eco distante reverbera pelas paredes do labirinto:"+"\n\"Outros comandos podem acompanhar o laço: break, continue, aliados na jornada do controle.\""
     ));
 
-    static void loreAle() {
+     void loreAle() {
         int i = random.nextInt(textosLore.size());//gera um num aleatorio entre 0 e o tamanho da lista
         String loreEscolhida = textosLore.remove(i);//remove a lore escolhida para não repetir
         textoLore(loreEscolhida);//imprime a lore escolhida
     }
-}
+
+        //cria uma lista com os textos dos itens presentes nos baus
+        List<String> baus = Arrays.asList(
+                "Você encontrou um casulo de alma. +20 de vida.",
+                "Você encontrou um colar amaldiçoado dos Los Illuminados. -20 de vida.",
+                "Você encontrou um caracol acenando para você... Nada acontece",
+                "Você libertou Zs'Skayr de sua prisão dimensional... e ele drenou parte da sua energia vital. -30 de vida",
+                "Você achou uma pedra filosofal fragmentada. +30 de vida."
+        );
+
+        void abrirBau() {
+            int i = random.nextInt(baus.size());//escolhe um num entre 0 e o de textos de bau disponiveis.
+            String evento = baus.get(i);//pega o texto correspondente a esse num.
+            digitando("\n Você encontrou um baú misterioso e o abre imediatamente...");
+            digitando(evento);//mostra evento.
+
+            //muda a vida do player baseado no evento.
+            if (evento.contains("+20")){
+                vida += 20;
+            } else if (evento.contains("+30")){
+                vida += 30;
+            } else if (evento.contains("-20")){
+                vida -= 20;
+            } else if (evento.contains("-30")){
+                vida -= 30;
+            }
+
+            //verifica se foi fatal, e mostra vida se não foi.
+            if (vida <= 0) {
+                aviso("Isto foi fatal... sua jornada termina aqui.");
+                aviso("VOCÊ MORREU");
+                System.exit(0);
+            } else {
+                digitando("Vida atual: " + vida);
+            }
+        }
+    }
 
